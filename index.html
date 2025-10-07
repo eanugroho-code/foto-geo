@@ -31,6 +31,7 @@
             max-width: 500px;
             width: 100%;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
         
@@ -61,6 +62,7 @@
             cursor: pointer;
             transition: all 0.3s ease;
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* Safari support */
         }
         
         .upload-section:hover {
@@ -118,6 +120,7 @@
             font-size: 11px;
             font-weight: 500;
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px); /* Safari support */
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 12px rgba(0,0,0,0.25);
             display: flex;
@@ -173,6 +176,7 @@
             padding: 25px;
             margin-bottom: 20px;
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* Safari support */
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
         
@@ -228,6 +232,7 @@
             justify-content: center;
             gap: 8px;
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* Safari support */
         }
         
         .btn-reset {
@@ -276,6 +281,7 @@
             font-weight: 600;
             font-size: 14px;
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* Safari support */
         }
         
         .success {
@@ -305,6 +311,7 @@
             color: #856404;
             text-align: center;
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* Safari support */
             border: 1px solid rgba(255, 234, 167, 0.8);
         }
         
@@ -328,6 +335,13 @@
             line-height: 1.5;
         }
 
+        /* Fallback untuk browser yang tidak mendukung backdrop-filter */
+        @supports not (backdrop-filter: blur(10px)) {
+            .container, .upload-section, .watermark-overlay, .location-form, .status-message, .photo-info, button {
+                background: rgba(255, 255, 255, 0.98);
+            }
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 20px;
@@ -344,6 +358,14 @@
             
             .header h1 {
                 font-size: 24px;
+            }
+            
+            .upload-section {
+                padding: 30px 15px;
+            }
+            
+            .location-form {
+                padding: 20px;
             }
         }
     </style>
@@ -368,7 +390,7 @@
         <input type="file" id="photoInput" class="hidden" accept="image/*" capture="environment" onchange="processPhoto(this)">
         
         <div class="preview-container">
-            <img id="previewImage" class="preview-image hidden">
+            <img id="previewImage" class="preview-image hidden" alt="Preview foto">
             <div id="watermarkOverlay" class="watermark-overlay hidden">
                 <canvas class="pin-icon" width="22" height="22"></canvas>
                 <div class="watermark-content">
@@ -473,6 +495,13 @@
             const file = input.files[0];
             if (!file) return;
 
+            // Validasi tipe file
+            const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!validTypes.includes(file.type)) {
+                showStatus('❌ Format file tidak didukung! Gunakan JPG atau PNG.', 'error');
+                return;
+            }
+
             // Validasi ukuran file (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 showStatus('❌ Ukuran file terlalu besar! Maksimal 5MB.', 'error');
@@ -503,7 +532,14 @@
                 // Nonaktifkan tombol download sampai geotag ditambahkan
                 document.getElementById('downloadBtn').disabled = true;
                 
+                // Sembunyikan watermark jika ada
+                document.getElementById('watermarkOverlay').classList.add('hidden');
+                
                 showStatus('✅ Foto berhasil diunggah. Silakan isi data lokasi.', 'info');
+            };
+            
+            reader.onerror = function() {
+                showStatus('❌ Error membaca file foto.', 'error');
             };
             
             reader.readAsDataURL(file);
@@ -566,6 +602,7 @@
                 
                 showStatus('✅ Geotag glassmorphism berhasil ditambahkan! Foto siap didownload.', 'success');
             }).catch(error => {
+                console.error('Error creating watermarked photo:', error);
                 showStatus('❌ Error menambahkan watermark: ' + error.message, 'error');
             });
         }
@@ -575,100 +612,106 @@
             return new Promise((resolve, reject) => {
                 const img = new Image();
                 img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Set canvas size sama dengan foto
-                    canvas.width = img.width;
-                    canvas.height = img.height;
-                    
-                    // Draw foto asli
-                    ctx.drawImage(img, 0, 0);
-                    
-                    // Tambahkan watermark glassmorphism
-                    const location = photoData.location;
-                    const date = new Date(location.timestamp);
-                    
-                    // Hitung ukuran dinamis berdasarkan tinggi foto
-                    const BASE_HEIGHT = 800;
-                    const scaleFactor = canvas.height / BASE_HEIGHT;
-                    const FONT_SIZE_COORD = Math.max(16, 20 * scaleFactor);
-                    const FONT_SIZE_DATETIME = Math.max(12, 14 * scaleFactor);
-                    const FONT_SIZE_LOCATION = Math.max(12, 14 * scaleFactor);
-                    const PADDING = Math.max(15, 20 * scaleFactor);
-                    const PIN_SIZE = Math.max(24, 30 * scaleFactor);
-                    const MARGIN = Math.max(20, 25 * scaleFactor);
-                    
-                    const coordinateText = `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;
-                    const dateTimeText = `${date.toLocaleDateString('id-ID')} ${date.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}`;
-                    const locationText = `${location.city}, ${location.province}`;
-                    
-                    // Hitung lebar teks
-                    ctx.font = `600 ${FONT_SIZE_COORD}px Arial`;
-                    const coordWidth = ctx.measureText(coordinateText).width;
-                    
-                    ctx.font = `400 ${FONT_SIZE_DATETIME}px Arial`;
-                    const datetimeWidth = ctx.measureText(dateTimeText).width;
-                    
-                    ctx.font = `500 ${FONT_SIZE_LOCATION}px Arial`;
-                    const locationWidth = ctx.measureText(locationText).width;
-                    
-                    const textWidth = Math.max(coordWidth, datetimeWidth, locationWidth);
-                    const totalWidth = PIN_SIZE + PADDING * 2 + textWidth + PADDING;
-                    const totalHeight = PADDING * 2 + FONT_SIZE_COORD + FONT_SIZE_DATETIME + FONT_SIZE_LOCATION + 8;
-                    
-                    const x = MARGIN;
-                    const y = canvas.height - totalHeight - MARGIN;
-                    
-                    // Background glassmorphism
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-                    ctx.beginPath();
-                    ctx.roundRect(x, y, totalWidth, totalHeight, 12 * scaleFactor);
-                    ctx.fill();
-                    
-                    // Border glassmorphism
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                    
-                    // Gambar pin Google Maps
-                    const pinX = x + PADDING + PIN_SIZE / 2;
-                    const pinY = y + totalHeight / 2;
-                    drawGoogleMapsPinCustom(ctx, PIN_SIZE, pinX, pinY);
-                    
-                    // Teks koordinat dengan shadow
-                    ctx.font = `600 ${FONT_SIZE_COORD}px Arial`;
-                    ctx.fillStyle = 'white';
-                    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-                    ctx.shadowBlur = 3;
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 1;
-                    ctx.fillText(coordinateText, x + PADDING + PIN_SIZE + PADDING, y + PADDING + FONT_SIZE_COORD);
-                    
-                    // Teks tanggal dan waktu
-                    ctx.font = `400 ${FONT_SIZE_DATETIME}px Arial`;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                    ctx.fillText(dateTimeText, x + PADDING + PIN_SIZE + PADDING, y + PADDING + FONT_SIZE_COORD + FONT_SIZE_DATETIME + 4);
-                    
-                    // Teks lokasi
-                    ctx.font = `500 ${FONT_SIZE_LOCATION}px Arial`;
-                    ctx.fillStyle = '#a8d8ff';
-                    ctx.fillText(locationText, x + PADDING + PIN_SIZE + PADDING, y + PADDING + FONT_SIZE_COORD + FONT_SIZE_DATETIME + FONT_SIZE_LOCATION + 8);
-                    
-                    // Reset shadow
-                    ctx.shadowColor = 'transparent';
-                    ctx.shadowBlur = 0;
-                    ctx.shadowOffsetX = 0;
-                    ctx.shadowOffsetY = 0;
-                    
-                    // Simpan foto dengan watermark
-                    photoData.watermarkedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
-                    photoData.hasGeotag = true;
-                    
-                    resolve();
+                    try {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        
+                        // Set canvas size sama dengan foto
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        
+                        // Draw foto asli
+                        ctx.drawImage(img, 0, 0);
+                        
+                        // Tambahkan watermark glassmorphism
+                        const location = photoData.location;
+                        const date = new Date(location.timestamp);
+                        
+                        // Hitung ukuran dinamis berdasarkan tinggi foto
+                        const BASE_HEIGHT = 800;
+                        const scaleFactor = canvas.height / BASE_HEIGHT;
+                        const FONT_SIZE_COORD = Math.max(16, 20 * scaleFactor);
+                        const FONT_SIZE_DATETIME = Math.max(12, 14 * scaleFactor);
+                        const FONT_SIZE_LOCATION = Math.max(12, 14 * scaleFactor);
+                        const PADDING = Math.max(15, 20 * scaleFactor);
+                        const PIN_SIZE = Math.max(24, 30 * scaleFactor);
+                        const MARGIN = Math.max(20, 25 * scaleFactor);
+                        
+                        const coordinateText = `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}`;
+                        const dateTimeText = `${date.toLocaleDateString('id-ID')} ${date.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})}`;
+                        const locationText = `${location.city}, ${location.province}`;
+                        
+                        // Hitung lebar teks
+                        ctx.font = `600 ${FONT_SIZE_COORD}px Arial`;
+                        const coordWidth = ctx.measureText(coordinateText).width;
+                        
+                        ctx.font = `400 ${FONT_SIZE_DATETIME}px Arial`;
+                        const datetimeWidth = ctx.measureText(dateTimeText).width;
+                        
+                        ctx.font = `500 ${FONT_SIZE_LOCATION}px Arial`;
+                        const locationWidth = ctx.measureText(locationText).width;
+                        
+                        const textWidth = Math.max(coordWidth, datetimeWidth, locationWidth);
+                        const totalWidth = PIN_SIZE + PADDING * 2 + textWidth + PADDING;
+                        const totalHeight = PADDING * 2 + FONT_SIZE_COORD + FONT_SIZE_DATETIME + FONT_SIZE_LOCATION + 8;
+                        
+                        const x = MARGIN;
+                        const y = canvas.height - totalHeight - MARGIN;
+                        
+                        // Background glassmorphism
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+                        ctx.beginPath();
+                        ctx.roundRect(x, y, totalWidth, totalHeight, 12 * scaleFactor);
+                        ctx.fill();
+                        
+                        // Border glassmorphism
+                        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                        
+                        // Gambar pin Google Maps
+                        const pinX = x + PADDING + PIN_SIZE / 2;
+                        const pinY = y + totalHeight / 2;
+                        drawGoogleMapsPinCustom(ctx, PIN_SIZE, pinX, pinY);
+                        
+                        // Teks koordinat dengan shadow
+                        ctx.font = `600 ${FONT_SIZE_COORD}px Arial`;
+                        ctx.fillStyle = 'white';
+                        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                        ctx.shadowBlur = 3;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 1;
+                        ctx.fillText(coordinateText, x + PADDING + PIN_SIZE + PADDING, y + PADDING + FONT_SIZE_COORD);
+                        
+                        // Teks tanggal dan waktu
+                        ctx.font = `400 ${FONT_SIZE_DATETIME}px Arial`;
+                        ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                        ctx.fillText(dateTimeText, x + PADDING + PIN_SIZE + PADDING, y + PADDING + FONT_SIZE_COORD + FONT_SIZE_DATETIME + 4);
+                        
+                        // Teks lokasi
+                        ctx.font = `500 ${FONT_SIZE_LOCATION}px Arial`;
+                        ctx.fillStyle = '#a8d8ff';
+                        ctx.fillText(locationText, x + PADDING + PIN_SIZE + PADDING, y + PADDING + FONT_SIZE_COORD + FONT_SIZE_DATETIME + FONT_SIZE_LOCATION + 8);
+                        
+                        // Reset shadow
+                        ctx.shadowColor = 'transparent';
+                        ctx.shadowBlur = 0;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 0;
+                        
+                        // Simpan foto dengan watermark
+                        photoData.watermarkedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                        photoData.hasGeotag = true;
+                        
+                        resolve();
+                    } catch (error) {
+                        reject(error);
+                    }
                 };
                 
-                img.onerror = reject;
+                img.onerror = function() {
+                    reject(new Error('Gagal memuat gambar'));
+                };
                 img.src = photoData.originalDataUrl;
             });
         }
@@ -742,10 +785,12 @@
                         showStatus('✅ Foto berhasil didownload dengan geotag glassmorphism!', 'success');
                     })
                     .catch(error => {
+                        console.error('Error downloading photo:', error);
                         showStatus('❌ Error mendownload foto: ' + error.message, 'error');
                     });
                     
             } catch (error) {
+                console.error('Error downloading photo:', error);
                 showStatus('❌ Error mendownload foto: ' + error.message, 'error');
             }
         }
