@@ -6,6 +6,8 @@
     <title>Geotag Camera - Watermark dengan Peta</title>
     <!-- Leaflet CSS untuk peta -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- html2canvas untuk capture screenshot -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -1048,8 +1050,8 @@
             reader.readAsDataURL(file);
         }
         
-        // Download foto dengan watermark
-        function downloadPhoto() {
+        // Download foto dengan watermark - REVISI UTAMA
+        async function downloadPhoto() {
             if (!mediaData.originalDataUrl) {
                 showStatus('❌ Tidak ada foto untuk didownload!', 'error');
                 return;
@@ -1057,9 +1059,26 @@
 
             showStatus('⏳ Sedang memproses foto...', 'info');
             
+            // Tunggu sejenak agar peta Leaflet benar-benar ter-render
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Ambil screenshot peta jika watermarkMapContainer terlihat
+            let mapImageData = null;
+            const watermarkMapContainer = document.getElementById('watermarkMapContainer');
+            
+            if (watermarkMapContainer && !watermarkMapContainer.classList.contains('hidden')) {
+                try {
+                    mapImageData = await captureMapScreenshot();
+                } catch (error) {
+                    console.error('Error capturing map:', error);
+                    // Fallback ke peta sederhana
+                    mapImageData = null;
+                }
+            }
+            
             const img = new Image();
             
-            img.onload = function() {
+            img.onload = async function() {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
                 
@@ -1070,8 +1089,8 @@
                 // Draw foto asli
                 ctx.drawImage(img, 0, 0);
                 
-                // Buat watermark di canvas (teks dan peta sederhana)
-                createWatermarkOnCanvas(ctx, canvas.width, canvas.height);
+                // Buat watermark di canvas (teks dan peta)
+                await createWatermarkOnCanvas(ctx, canvas.width, canvas.height, mapImageData);
                 
                 // Konversi ke blob dan download
                 canvas.toBlob(function(blob) {
@@ -1095,10 +1114,54 @@
             img.src = mediaData.originalDataUrl;
         }
         
-        // Buat watermark di canvas (untuk output)
-        function createWatermarkOnCanvas(ctx, imgWidth, imgHeight) {
-            // Ukuran teks relatif terhadap lebar gambar - DIPERBESAR
-            const baseFontSize = Math.max(24, imgWidth * 0.025); // 2.5% dari lebar gambar
+        // Tangkap screenshot peta Leaflet
+        async function captureMapScreenshot() {
+            return new Promise((resolve, reject) => {
+                const mapContainer = document.getElementById('watermarkMap');
+                if (!mapContainer) {
+                    reject('Map container not found');
+                    return;
+                }
+                
+                // Tunggu sejenak agar Leaflet selesai render
+                setTimeout(async () => {
+                    try {
+                        // Buat container kloning untuk screenshot
+                        const cloneContainer = mapContainer.cloneNode(true);
+                        cloneContainer.style.width = '250px';
+                        cloneContainer.style.height = '180px';
+                        cloneContainer.style.visibility = 'visible';
+                        cloneContainer.style.opacity = '1';
+                        document.body.appendChild(cloneContainer);
+                        
+                        // Pastikan peta di-render ulang
+                        if (watermarkMap) {
+                            watermarkMap.invalidateSize();
+                            await new Promise(resolve => setTimeout(resolve, 300));
+                        }
+                        
+                        // Gunakan html2canvas untuk menangkap screenshot
+                        const canvas = await html2canvas(cloneContainer, {
+                            backgroundColor: '#f8f8f8',
+                            scale: 2, // Resolusi lebih tinggi
+                            useCORS: true,
+                            logging: false,
+                            allowTaint: true
+                        });
+                        
+                        document.body.removeChild(cloneContainer);
+                        resolve(canvas);
+                    } catch (error) {
+                        reject(error);
+                    }
+                }, 500);
+            });
+        }
+        
+        // Buat watermark di canvas (untuk output) - REVISI
+        async function createWatermarkOnCanvas(ctx, imgWidth, imgHeight, mapScreenshot) {
+            // Ukuran teks relatif terhadap lebar gambar
+            const baseFontSize = Math.max(24, imgWidth * 0.025);
             const lineSpacing = baseFontSize * 1.3;
             
             // Posisi teks di kanan atas
@@ -1154,39 +1217,24 @@
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             
-            // Gambar peta sederhana di kiri bawah
+            // Gambar peta di kiri bawah
             const mapWidth = Math.min(250, imgWidth * 0.25);
             const mapHeight = Math.min(180, imgHeight * 0.2);
             const mapX = Math.max(30, imgWidth * 0.03);
             const mapY = imgHeight - mapHeight - Math.max(30, imgHeight * 0.03);
             
-            // Background peta (abu-abu terang dengan grid sederhana)
-            ctx.fillStyle = '#f8f8f8';
-            ctx.fillRect(mapX, mapY, mapWidth, mapHeight);
-            
-            // Gambar grid sederhana untuk peta
-            ctx.strokeStyle = '#ddd';
-            ctx.lineWidth = 1;
-            const gridSize = 20;
-            for (let x = mapX + gridSize; x < mapX + mapWidth; x += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(x, mapY);
-                ctx.lineTo(x, mapY + mapHeight);
-                ctx.stroke();
-            }
-            for (let y = mapY + gridSize; y < mapY + mapHeight; y += gridSize) {
-                ctx.beginPath();
-                ctx.moveTo(mapX, y);
-                ctx.lineTo(mapX + mapWidth, y);
-                ctx.stroke();
+            // Jika ada screenshot peta, gunakan itu
+            if (mapScreenshot) {
+                // Gambar screenshot peta
+                ctx.drawImage(mapScreenshot, mapX, mapY, mapWidth, mapHeight);
+            } else {
+                // Fallback: gambar peta sederhana
+                drawSimpleMap(ctx, mapX, mapY, mapWidth, mapHeight);
             }
             
-            // Border peta
+            // Tambahkan border putih dan shadow untuk peta
             ctx.strokeStyle = 'white';
             ctx.lineWidth = 3;
-            ctx.strokeRect(mapX, mapY, mapWidth, mapHeight);
-            
-            // Shadow untuk peta
             ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
             ctx.shadowBlur = 8;
             ctx.shadowOffsetX = 3;
@@ -1195,25 +1243,53 @@
             ctx.shadowBlur = 0;
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
+        }
+        
+        // Fungsi fallback untuk menggambar peta sederhana
+        function drawSimpleMap(ctx, x, y, width, height) {
+            // Background peta (abu-abu terang)
+            ctx.fillStyle = '#f8f8f8';
+            ctx.fillRect(x, y, width, height);
             
-            // Gambar marker di peta (posisi relatif berdasarkan koordinat)
-            const markerX = mapX + (mapWidth * 0.6); // Contoh posisi
-            const markerY = mapY + (mapHeight * 0.4);
-            const markerSize = Math.min(mapWidth, mapHeight) * 0.12;
+            // Gambar grid sederhana untuk peta
+            ctx.strokeStyle = '#ddd';
+            ctx.lineWidth = 0.5;
+            const gridSize = 15;
             
-            // Outer marker (red)
-            ctx.fillStyle = '#e74c3c';
+            for (let gridX = x + gridSize; gridX < x + width; gridX += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(gridX, y);
+                ctx.lineTo(gridX, y + height);
+                ctx.stroke();
+            }
+            
+            for (let gridY = y + gridSize; gridY < y + height; gridY += gridSize) {
+                ctx.beginPath();
+                ctx.moveTo(x, gridY);
+                ctx.lineTo(x + width, gridY);
+                ctx.stroke();
+            }
+            
+            // Gambar jalan utama (horizontal)
+            ctx.strokeStyle = '#bbb';
+            ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(markerX, markerY, markerSize, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.moveTo(x + width * 0.1, y + height * 0.5);
+            ctx.lineTo(x + width * 0.9, y + height * 0.5);
+            ctx.stroke();
             
-            // Inner marker (white)
-            ctx.fillStyle = 'white';
+            // Gambar jalan utama (vertikal)
             ctx.beginPath();
-            ctx.arc(markerX, markerY, markerSize/2, 0, Math.PI * 2);
-            ctx.fill();
+            ctx.moveTo(x + width * 0.5, y + height * 0.3);
+            ctx.lineTo(x + width * 0.5, y + height * 0.7);
+            ctx.stroke();
             
-            // Shadow untuk marker
+            // Gambar marker di lokasi
+            const markerX = x + width * 0.5;
+            const markerY = y + height * 0.5;
+            const markerSize = Math.min(width, height) * 0.1;
+            
+            // Outer marker (red dengan shadow)
             ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
             ctx.shadowBlur = 5;
             ctx.shadowOffsetX = 2;
@@ -1226,17 +1302,39 @@
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
             
-            // Teks "PETA" di bawah
-            ctx.font = `bold ${markerSize * 0.9}px Arial`;
+            // Inner marker (white)
+            ctx.fillStyle = 'white';
+            ctx.beginPath();
+            ctx.arc(markerX, markerY, markerSize/2, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Teks "LOKASI" di bawah peta
+            ctx.font = `bold ${markerSize * 0.8}px Arial`;
             ctx.fillStyle = '#666';
             ctx.textAlign = 'center';
-            ctx.fillText('PETA', mapX + mapWidth/2, mapY + mapHeight - markerSize/2);
+            ctx.fillText('LOKASI', x + width/2, y + height - markerSize/3);
             
             // Koordinat singkat di dalam peta
-            ctx.font = `${markerSize * 0.7}px "Courier New", monospace`;
+            ctx.font = `${markerSize * 0.6}px "Courier New", monospace`;
             ctx.fillStyle = '#333';
-            ctx.fillText(`${currentCoords.lat.toFixed(2)}`, mapX + mapWidth/2, mapY + markerSize * 1.5);
-            ctx.fillText(`${currentCoords.lng.toFixed(2)}`, mapX + mapWidth/2, mapY + markerSize * 2.5);
+            ctx.fillText(`${currentCoords.lat.toFixed(2)}`, x + width/2, y + markerSize * 1.5);
+            ctx.fillText(`${currentCoords.lng.toFixed(2)}`, x + width/2, y + markerSize * 2.5);
+        }
+        
+        // Fungsi untuk memastikan peta siap sebelum download
+        async function ensureMapReady() {
+            return new Promise((resolve) => {
+                if (watermarkMap) {
+                    // Pastikan peta di-render ulang
+                    watermarkMap.invalidateSize();
+                    setTimeout(() => {
+                        watermarkMap.invalidateSize();
+                        resolve();
+                    }, 300);
+                } else {
+                    resolve();
+                }
+            });
         }
         
         // Reset semua
