@@ -28,7 +28,7 @@
             border-radius: 20px;
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
             overflow: hidden;
         }
         
@@ -82,7 +82,7 @@
         .camera-container {
             position: relative;
             background: #000;
-            height: 450px;
+            height: 500px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -116,23 +116,23 @@
             100% { opacity: 0.7; }
         }
         
-        /* MODIFIKASI WATERMARK BARU DENGAN PETA */
+        /* MODIFIKASI WATERMARK UNTUK FRONTEND (PREVIEW) */
         .watermark-overlay {
             position: absolute;
             width: 90%;
-            max-width: 500px;
+            max-width: 550px;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0, 0, 0, 0.85);
             color: white;
-            padding: 12px;
+            padding: 15px;
             font-size: 14px;
             line-height: 1.5;
             z-index: 10;
             border-radius: 12px;
             display: flex;
-            gap: 15px;
+            gap: 20px;
             align-items: center;
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6),
                         0 0 0 1px rgba(255, 255, 255, 0.1);
@@ -141,8 +141,8 @@
         }
         
         .watermark-map-container {
-            width: 120px;
-            height: 120px;
+            width: 140px;
+            height: 140px;
             border-radius: 8px;
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -159,32 +159,34 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             padding: 5px;
         }
         
         .timestamp-info {
             font-weight: 700;
-            font-size: 16px;
+            font-size: 18px;
             color: white;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8),
                          0 0 0 2px rgba(0, 0, 0, 0.3);
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             background: linear-gradient(135deg, rgba(74, 105, 189, 0.4), rgba(52, 152, 219, 0.4));
             border: 1px solid rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.5px;
         }
         
         .location-info {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             color: white;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 16px;
         }
         
         .coordinate-info {
@@ -192,100 +194,102 @@
             font-weight: 600;
             color: white;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             background: rgba(231, 76, 60, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.15);
+            font-size: 16px;
         }
         
         .controls {
-            padding: 20px;
+            padding: 25px;
             background: #f8f9fa;
         }
         
         .control-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .control-group h3 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 16px;
+            margin-bottom: 15px;
+            font-size: 18px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
         
         .input-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 15px;
+            margin-bottom: 15px;
         }
         
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         
         .input-group label {
             display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
+            margin-bottom: 8px;
+            font-size: 15px;
             color: #2c3e50;
-            font-weight: 500;
+            font-weight: 600;
         }
         
         .input-group input, .input-group select {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px 18px;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 10px;
+            font-size: 15px;
             transition: all 0.3s;
         }
         
         .input-group input:focus, .input-group select:focus {
             border-color: #4a69bd;
-            box-shadow: 0 0 0 2px rgba(74, 105, 189, 0.2);
+            box-shadow: 0 0 0 3px rgba(74, 105, 189, 0.2);
             outline: none;
         }
         
         .time-control {
             background: #fff3cd;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
             border: 1px solid #ffeaa7;
         }
         
         .time-control h4 {
             color: #856404;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 16px;
         }
         
         .time-inputs {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 15px;
         }
         
         .time-options {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 15px;
             flex-wrap: wrap;
         }
         
         .time-btn {
-            padding: 8px 12px;
+            padding: 10px 16px;
             background: #f8f9fa;
             border: 1px solid #ddd;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
             transition: all 0.2s;
         }
         
@@ -301,51 +305,53 @@
         
         .coord-manipulation {
             background: #e3f2fd;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 10px;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
         }
         
         .coord-manipulation h4 {
             color: #1565c0;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            font-size: 16px;
         }
         
         .manipulation-controls {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 15px;
         }
         
         .manipulation-controls select, .manipulation-controls input {
             width: 100%;
-            padding: 8px;
+            padding: 12px;
             border: 1px solid #bbdefb;
-            border-radius: 5px;
+            border-radius: 6px;
+            font-size: 14px;
         }
         
         .button-group {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
+            gap: 20px;
+            margin-top: 25px;
         }
         
         button {
-            padding: 14px;
+            padding: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            font-size: 15px;
+            gap: 10px;
+            font-size: 16px;
         }
         
         .btn-capture {
@@ -382,7 +388,7 @@
             background: #27ae60;
             color: white;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .btn-download:hover {
@@ -394,7 +400,7 @@
             background: #3498db;
             color: white;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         
         .btn-upload:hover {
@@ -407,12 +413,12 @@
         }
         
         .status-message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
             text-align: center;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 15px;
         }
         
         .success {
@@ -436,24 +442,24 @@
         .camera-placeholder {
             color: white;
             text-align: center;
-            padding: 20px;
+            padding: 30px;
         }
         
         .camera-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
+            font-size: 80px;
+            margin-bottom: 20px;
             opacity: 0.7;
         }
         
         .placeholder-text {
-            font-size: 16px;
+            font-size: 18px;
             opacity: 0.8;
         }
         
         .video-controls {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 15px;
+            margin-top: 15px;
         }
         
         .video-time {
@@ -462,26 +468,27 @@
             top: 15px;
             left: 15px;
             background: rgba(0, 0, 0, 0.5);
-            padding: 5px 10px;
-            border-radius: 5px;
+            padding: 8px 15px;
+            border-radius: 6px;
             font-family: monospace;
+            font-size: 16px;
         }
         
-        @media (max-width: 580px) {
+        @media (max-width: 650px) {
             .camera-container {
-                height: 350px;
+                height: 400px;
             }
             
             .watermark-overlay {
                 width: 95%;
-                padding: 10px;
+                padding: 12px;
                 flex-direction: column;
-                gap: 10px;
+                gap: 15px;
             }
             
             .watermark-map-container {
                 width: 100%;
-                height: 100px;
+                height: 120px;
             }
             
             .input-row, .manipulation-controls, .time-inputs {
@@ -498,6 +505,14 @@
             
             .video-controls {
                 flex-direction: column;
+            }
+            
+            .timestamp-info {
+                font-size: 16px;
+            }
+            
+            .location-info, .coordinate-info {
+                font-size: 14px;
             }
         }
     </style>
@@ -532,7 +547,7 @@
             
             <div id="videoTime" class="video-time hidden">00:00</div>
             
-            <!-- MODIFIKASI WATERMARK BARU DENGAN PETA LEAFLET -->
+            <!-- WATERMARK UNTUK FRONTEND (PREVIEW) -->
             <div id="watermarkOverlay" class="watermark-overlay hidden">
                 <div class="watermark-map-container">
                     <div id="leafletMap"></div>
@@ -584,9 +599,9 @@
                         <button class="time-btn" onclick="setStartTimeTomorrow()">Besok</button>
                         <button class="time-btn" onclick="setCustomStartTime()">Custom</button>
                     </div>
-                    <div class="checkbox-group" style="margin-top: 10px; display: flex; align-items: center; gap: 5px;">
+                    <div class="checkbox-group" style="margin-top: 15px; display: flex; align-items: center; gap: 8px;">
                         <input type="checkbox" id="timeRunning" checked>
-                        <label for="timeRunning" style="font-size: 12px;">Waktu berjalan real-time</label>
+                        <label for="timeRunning" style="font-size: 14px; font-weight: 500;">Waktu berjalan real-time</label>
                     </div>
                 </div>
                 
@@ -650,6 +665,9 @@
     <!-- Leaflet JS untuk peta -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
+    <!-- html2canvas untuk capture watermark -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
     <script>
         // Mode saat ini: 'photo' atau 'video'
         let currentMode = 'photo';
@@ -664,6 +682,7 @@
         let isTimeRunning = true; // Waktu berjalan atau tidak
         let leafletMap = null; // Variabel untuk menyimpan instance peta Leaflet
         let leafletMarker = null; // Variabel untuk marker peta
+        let watermarkCanvas = null; // Canvas untuk watermark statis
         
         // Koordinat yang sudah direkayasa (tetap selama sesi)
         let manipulatedCoords = {
@@ -863,7 +882,7 @@
             
             // Tambahkan marker baru
             leafletMarker = L.marker([lat, lng]).addTo(leafletMap)
-                .bindPopup(`Lokasi: ${lat}, ${lng}`)
+                .bindPopup(`Lokasi: ${lat.toFixed(6)}, ${lng.toFixed(6)}`)
                 .openPopup();
                 
             // Nonaktifkan interaksi pada peta (hanya untuk tampilan)
@@ -873,6 +892,108 @@
             leafletMap.doubleClickZoom.disable();
             leafletMap.boxZoom.disable();
             leafletMap.keyboard.disable();
+            
+            // Update watermark canvas
+            createWatermarkCanvas(lat, lng);
+        }
+
+        // Fungsi untuk membuat watermark canvas (untuk backend output)
+        function createWatermarkCanvas(lat, lng) {
+            // Buat canvas untuk watermark statis
+            watermarkCanvas = document.createElement('canvas');
+            const ctx = watermarkCanvas.getContext('2d');
+            
+            // Ukuran watermark (sesuai dengan frontend)
+            const watermarkWidth = 550;
+            const watermarkHeight = 170;
+            
+            watermarkCanvas.width = watermarkWidth;
+            watermarkCanvas.height = watermarkHeight;
+            
+            // Background watermark
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
+            ctx.beginPath();
+            ctx.roundRect(0, 0, watermarkWidth, watermarkHeight, 12);
+            ctx.fill();
+            
+            // Border putih tipis
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            
+            // Area peta (kiri)
+            const mapSize = 140;
+            const mapX = 15;
+            const mapY = 15;
+            
+            // Gambar area peta
+            ctx.fillStyle = '#2c3e50';
+            ctx.beginPath();
+            ctx.roundRect(mapX, mapY, mapSize, mapSize, 8);
+            ctx.fill();
+            
+            // Border peta
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Gambar marker di peta
+            const markerX = mapX + mapSize/2;
+            const markerY = mapY + mapSize/2;
+            
+            // Outer marker (red)
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(markerX, markerY, 10, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Inner marker (white)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            ctx.arc(markerX, markerY, 5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Teks "MAP" di peta
+            ctx.font = 'bold 16px Arial';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.textAlign = 'center';
+            ctx.fillText('MAP', markerX, mapY + mapSize - 10);
+            
+            // Area teks (kanan)
+            const textX = mapX + mapSize + 20;
+            const textY = mapY + 10;
+            
+            // Teks timestamp
+            const currentTime = new Date();
+            if (isTimeRunning && videoStartTime) {
+                const elapsed = new Date().getTime() - (new Date()).getTime() + videoStartTime.getTime();
+                currentTime.setTime(elapsed);
+            } else if (videoStartTime) {
+                currentTime.setTime(videoStartTime.getTime());
+            }
+            
+            ctx.font = 'bold 18px Arial';
+            ctx.fillStyle = 'white';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.fillText(formatIndonesianDate(currentTime), textX, textY);
+            
+            // Teks alamat
+            const address = document.getElementById('address').value.trim() || 'Jl. Contoh No. 123, Jakarta';
+            ctx.font = '16px Arial';
+            ctx.fillStyle = 'white';
+            ctx.fillText(address, textX, textY + 35);
+            
+            // Teks koordinat
+            ctx.font = '600 16px "Courier New", monospace';
+            ctx.fillStyle = 'white';
+            ctx.fillText(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`, textX, textY + 70);
+            
+            // Shadow effect
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 5;
         }
 
         // Fungsi untuk update watermark dengan waktu berjalan dan peta
@@ -1246,6 +1367,8 @@
 
         // Fungsi untuk download foto dengan watermark dan peta
         async function downloadPhotoWithWatermark() {
+            showStatus('⏳ Sedang memproses foto dengan watermark...', 'info');
+            
             const img = new Image();
             
             img.onload = function() {
@@ -1259,85 +1382,38 @@
                 // Draw foto asli
                 ctx.drawImage(img, 0, 0);
                 
-                // Buat peta Leaflet untuk canvas
-                const lat = parseFloat(manipulatedCoords.lat);
-                const lng = parseFloat(manipulatedCoords.lng);
-                
-                // Hitung ukuran watermark berdasarkan tinggi foto
-                const scaleFactor = canvas.height / 800;
-                const watermarkHeight = Math.max(120, 150 * scaleFactor);
-                const watermarkWidth = Math.max(350, 450 * scaleFactor);
-                const padding = Math.max(10, 15 * scaleFactor);
-                const fontSize = Math.max(14, 16 * scaleFactor);
+                // Ukuran watermark relatif terhadap foto
+                const scaleFactor = Math.min(1, canvas.width / 800);
+                const watermarkWidth = 550 * scaleFactor;
+                const watermarkHeight = 170 * scaleFactor;
                 
                 // Posisi watermark (bawah tengah)
                 const watermarkX = (canvas.width - watermarkWidth) / 2;
-                const watermarkY = canvas.height - watermarkHeight - padding;
+                const watermarkY = canvas.height - watermarkHeight - 20;
                 
-                // Background watermark dengan efek shadow
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-                ctx.shadowBlur = 15;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 5;
-                
-                // Buat rounded rectangle untuk background
-                const borderRadius = 12 * scaleFactor;
-                ctx.beginPath();
-                ctx.roundRect(watermarkX, watermarkY, watermarkWidth, watermarkHeight, borderRadius);
-                ctx.fill();
-                
-                // Reset shadow
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetY = 0;
-                
-                // Buat border putih tipis
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-                
-                // Area untuk peta (kiri)
-                const mapSize = watermarkHeight - padding * 2;
-                const mapX = watermarkX + padding;
-                const mapY = watermarkY + padding;
-                
-                // Buat peta sederhana sebagai placeholder
-                // Dalam implementasi nyata, Anda mungkin ingin render peta Leaflet ke canvas
-                ctx.fillStyle = '#2c3e50';
-                ctx.fillRect(mapX, mapY, mapSize, mapSize);
-                
-                // Tambahkan marker di peta
-                const markerX = mapX + mapSize/2;
-                const markerY = mapY + mapSize/2;
-                ctx.fillStyle = '#e74c3c';
-                ctx.beginPath();
-                ctx.arc(markerX, markerY, 8 * scaleFactor, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                ctx.beginPath();
-                ctx.arc(markerX, markerY, 4 * scaleFactor, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Area untuk teks (kanan)
-                const textX = mapX + mapSize + padding;
-                const textY = mapY;
-                const textWidth = watermarkWidth - mapSize - padding * 3;
-                
-                // Teks timestamp (waktu saat download)
-                ctx.font = `bold ${fontSize}px Arial`;
-                ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
-                ctx.fillText(formatIndonesianDate(new Date()), textX, textY);
-                
-                // Teks alamat
-                const address = document.getElementById('address').value.trim() || 'Jl. Contoh No. 123, Jakarta';
-                ctx.font = `${fontSize}px Arial`;
-                ctx.fillText(address, textX, textY + fontSize + 5);
-                
-                // Teks koordinat
-                ctx.font = `${fontSize}px 'Courier New', monospace`;
-                ctx.fillText(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`, textX, textY + (fontSize + 5) * 2);
+                // Gambar watermark canvas ke foto
+                if (watermarkCanvas) {
+                    // Scale watermark canvas ke ukuran yang sesuai
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCanvas.width = watermarkWidth;
+                    tempCanvas.height = watermarkHeight;
+                    
+                    // Draw watermark dengan kualitas yang baik
+                    tempCtx.drawImage(watermarkCanvas, 0, 0, watermarkWidth, watermarkHeight);
+                    
+                    // Gambar ke foto utama dengan efek shadow
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+                    ctx.shadowBlur = 15 * scaleFactor;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 5 * scaleFactor;
+                    
+                    ctx.drawImage(tempCanvas, watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+                    
+                    // Reset shadow
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetY = 0;
+                }
                 
                 // Konversi ke blob dan download
                 canvas.toBlob(function(blob) {
@@ -1355,7 +1431,7 @@
                     URL.revokeObjectURL(url);
                     
                     showStatus('✅ Foto berhasil didownload dengan watermark dan peta!', 'success');
-                }, 'image/jpeg', 0.9);
+                }, 'image/jpeg', 0.95);
             };
             
             img.src = mediaData.originalDataUrl;
@@ -1411,87 +1487,43 @@
                 // Draw video frame
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
                 
-                // Tambahkan watermark dengan peta dan teks
-                const lat = parseFloat(manipulatedCoords.lat);
-                const lng = parseFloat(manipulatedCoords.lng);
-                const address = document.getElementById('address').value.trim() || 'Jl. Contoh No. 123, Jakarta';
-                
-                // Hitung waktu untuk frame ini (berjalan dari waktu awal video)
-                const frameTime = new Date(videoStartTime.getTime() + (video.currentTime * 1000));
-                
-                // Hitung ukuran watermark
-                const scaleFactor = canvas.height / 800;
-                const watermarkHeight = Math.max(120, 150 * scaleFactor);
-                const watermarkWidth = Math.max(350, 450 * scaleFactor);
-                const padding = Math.max(10, 15 * scaleFactor);
-                const fontSize = Math.max(14, 16 * scaleFactor);
+                // Ukuran watermark relatif terhadap video
+                const scaleFactor = Math.min(1, canvas.width / 800);
+                const watermarkWidth = 550 * scaleFactor;
+                const watermarkHeight = 170 * scaleFactor;
                 
                 // Posisi watermark (bawah tengah)
                 const watermarkX = (canvas.width - watermarkWidth) / 2;
-                const watermarkY = canvas.height - watermarkHeight - padding;
+                const watermarkY = canvas.height - watermarkHeight - 15;
                 
-                // Background watermark dengan efek shadow
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.85)';
-                ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-                ctx.shadowBlur = 15;
-                ctx.shadowOffsetX = 0;
-                ctx.shadowOffsetY = 5;
-                
-                // Buat rounded rectangle untuk background
-                const borderRadius = 12 * scaleFactor;
-                ctx.beginPath();
-                ctx.roundRect(watermarkX, watermarkY, watermarkWidth, watermarkHeight, borderRadius);
-                ctx.fill();
-                
-                // Reset shadow
-                ctx.shadowBlur = 0;
-                ctx.shadowOffsetY = 0;
-                
-                // Buat border putih tipis
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-                
-                // Area untuk peta (kiri)
-                const mapSize = watermarkHeight - padding * 2;
-                const mapX = watermarkX + padding;
-                const mapY = watermarkY + padding;
-                
-                // Buat peta sederhana sebagai placeholder
-                ctx.fillStyle = '#2c3e50';
-                ctx.fillRect(mapX, mapY, mapSize, mapSize);
-                
-                // Tambahkan marker di peta
-                const markerX = mapX + mapSize/2;
-                const markerY = mapY + mapSize/2;
-                ctx.fillStyle = '#e74c3c';
-                ctx.beginPath();
-                ctx.arc(markerX, markerY, 8 * scaleFactor, 0, Math.PI * 2);
-                ctx.fill();
-                
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                ctx.beginPath();
-                ctx.arc(markerX, markerY, 4 * scaleFactor, 0, Math.PI * 2);
-                ctx.fill();
-                
-                // Area untuk teks (kanan)
-                const textX = mapX + mapSize + padding;
-                const textY = mapY;
-                const textWidth = watermarkWidth - mapSize - padding * 3;
-                
-                // Teks timestamp (waktu berjalan sesuai frame)
-                ctx.font = `bold ${fontSize}px Arial`;
-                ctx.fillStyle = 'white';
-                ctx.textBaseline = 'top';
-                ctx.fillText(formatIndonesianDate(frameTime), textX, textY);
-                
-                // Teks alamat
-                ctx.font = `${fontSize}px Arial`;
-                ctx.fillText(address, textX, textY + fontSize + 5);
-                
-                // Teks koordinat (tetap sama untuk semua frame)
-                ctx.font = `${fontSize}px 'Courier New', monospace`;
-                ctx.fillText(`Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`, textX, textY + (fontSize + 5) * 2);
+                // Gambar watermark canvas ke video frame
+                if (watermarkCanvas) {
+                    // Scale watermark canvas ke ukuran yang sesuai
+                    const tempCanvas = document.createElement('canvas');
+                    const tempCtx = tempCanvas.getContext('2d');
+                    tempCanvas.width = watermarkWidth;
+                    tempCanvas.height = watermarkHeight;
+                    
+                    // Update timestamp di watermark untuk frame ini
+                    const lat = parseFloat(manipulatedCoords.lat);
+                    const lng = parseFloat(manipulatedCoords.lng);
+                    createWatermarkCanvas(lat, lng); // Update watermark dengan waktu saat ini
+                    
+                    // Draw watermark yang sudah diupdate
+                    tempCtx.drawImage(watermarkCanvas, 0, 0, watermarkWidth, watermarkHeight);
+                    
+                    // Gambar ke frame video dengan efek shadow
+                    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
+                    ctx.shadowBlur = 15 * scaleFactor;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 5 * scaleFactor;
+                    
+                    ctx.drawImage(tempCanvas, watermarkX, watermarkY, watermarkWidth, watermarkHeight);
+                    
+                    // Reset shadow
+                    ctx.shadowBlur = 0;
+                    ctx.shadowOffsetY = 0;
+                }
                 
                 // Request frame berikutnya
                 requestAnimationFrame(drawFrame);
